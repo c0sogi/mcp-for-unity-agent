@@ -30,7 +30,16 @@ if ($LASTEXITCODE -ne 0) {
 $exePath = Join-Path $root "bin\$Configuration\net40\McpForUnityAgent.exe"
 Copy-Item -LiteralPath $exePath -Destination (Join-Path $OutputDir "McpForUnityAgent.exe")
 Copy-Item -LiteralPath (Join-Path $root "README.md") -Destination (Join-Path $OutputDir "README.md")
-Copy-Item -LiteralPath (Join-Path $root "VERSION.txt") -Destination (Join-Path $OutputDir "VERSION.txt")
+
+$versionInfo = [Diagnostics.FileVersionInfo]::GetVersionInfo($exePath)
+$version = $versionInfo.ProductVersion
+if ([string]::IsNullOrWhiteSpace($version)) {
+    $version = $versionInfo.FileVersion
+}
+if ([string]::IsNullOrWhiteSpace($version)) {
+    throw "Could not determine package version from $exePath"
+}
+Set-Content -Path (Join-Path $OutputDir "VERSION.txt") -Value "McpForUnity Agent $version" -Encoding ASCII
 
 Set-Content -Path (Join-Path $OutputDir "install.cmd") -Value "@echo off`r`nsetlocal`r`nstart `"`" `"%~dp0McpForUnityAgent.exe`" --install`r`n" -Encoding ASCII
 Set-Content -Path (Join-Path $OutputDir "uninstall.cmd") -Value "@echo off`r`nsetlocal`r`nstart `"`" `"%~dp0McpForUnityAgent.exe`" --uninstall`r`n" -Encoding ASCII

@@ -27,7 +27,7 @@ internal sealed class AppConfig
 		appConfig.CommandArgs = "--from \"mcpforunityserver==9.7.3\" mcp-for-unity --transport http --http-url http://127.0.0.1:8080 --project-scoped-tools";
 		appConfig.AutoRestart = true;
 		appConfig.RestartDelaySeconds = 5;
-		appConfig.KillPortOnAutoRestart = false;
+		appConfig.KillPortOnAutoRestart = true;
 		appConfig.AutoRestartKillPort = 8080;
 		appConfig.AutoConnectUnitySession = true;
 		return appConfig;

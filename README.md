@@ -58,14 +58,16 @@ The default server command is:
 
 - `Start`, `Stop`, `Restart`
 - `Console`
-- `Ports`
-- `Install Unity Plugin...`
-- `Logs Folder`
+- `Port Killer`
 - `Config`
-- `About`
 
-The installer and Config window both expose `Dependencies...`, which shows uv/Git status with per-dependency install or reinstall buttons.
+Config is tabbed:
 
-Config also includes auto-restart settings. `Port cleanup` can kill the configured port before an automatic retry, which helps recover from port allocation failures instead of looping on the same occupied port.
+- `Server`: server executable, arguments, retry, port cleanup, Unity MCP session auto-connect, dependency setup, Unity plugin install, shortcuts, version, and install directory.
+- `Client`: configure detected MCP clients, including Codex, to use the Agent HTTP endpoint. The bulk action is `Configure All Detected Clients`.
+
+The installer and Config `Server` tab both expose `Dependencies...`, which shows uv/Git status with per-dependency install or reinstall buttons.
+
+Config changes are saved as you edit them. `Port cleanup` is enabled by default and can kill the configured port before any start or restart, which helps recover from port allocation failures instead of looping on the same occupied port.
 
 `Install Unity Plugin...` opens a path-entry dialog. You can paste a Unity project root path directly, or use `Browse...`. The installer updates `Packages/manifest.json` and creates a timestamped backup before writing.

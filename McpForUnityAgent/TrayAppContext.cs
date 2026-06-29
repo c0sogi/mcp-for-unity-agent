@@ -73,25 +73,13 @@ internal sealed class TrayAppContext : ApplicationContext
 		{
 			ShowConsole();
 		}));
-		contextMenuStrip.Items.Add(new ToolStripMenuItem("Ports", null, delegate
+		contextMenuStrip.Items.Add(new ToolStripMenuItem("Port Killer", null, delegate
 		{
 			ShowPorts();
-		}));
-		contextMenuStrip.Items.Add(new ToolStripMenuItem("Install Unity Plugin...", null, delegate
-		{
-			InstallUnityPlugin();
-		}));
-		contextMenuStrip.Items.Add(new ToolStripMenuItem("Logs Folder", null, delegate
-		{
-			OpenLogsFolder();
 		}));
 		contextMenuStrip.Items.Add(new ToolStripMenuItem("Config", null, delegate
 		{
 			ShowConfig();
-		}));
-		contextMenuStrip.Items.Add(new ToolStripMenuItem("About", null, delegate
-		{
-			ShowAbout();
 		}));
 		contextMenuStrip.Items.Add(new ToolStripSeparator());
 		contextMenuStrip.Items.Add(new ToolStripMenuItem("Exit", null, delegate
@@ -130,7 +118,6 @@ internal sealed class TrayAppContext : ApplicationContext
 		if (restartPending && !ServerRunning && DateTime.Now >= restartAt)
 		{
 			restartPending = false;
-			CleanupAutoRestartPort(appConfig);
 			StartServer(showErrors: false);
 		}
 		RefreshMenuState();
@@ -193,6 +180,7 @@ internal sealed class TrayAppContext : ApplicationContext
 			RefreshMenuState();
 			return false;
 		}
+		CleanupStartPort(appConfig);
 		logPath = AppPaths.NewServerLogPath();
 		AppendLog("INFO", "Starting: " + appConfig.CommandPath + " " + appConfig.CommandArgs);
 		ProcessStartInfo processStartInfo = new ProcessStartInfo();
@@ -337,7 +325,7 @@ internal sealed class TrayAppContext : ApplicationContext
 		AppendLog("INFO", reason + " Restarting in " + num + " second(s).");
 	}
 
-	private void CleanupAutoRestartPort(AppConfig appConfig)
+	private void CleanupStartPort(AppConfig appConfig)
 	{
 		if (appConfig == null || !appConfig.KillPortOnAutoRestart)
 		{
@@ -355,7 +343,7 @@ internal sealed class TrayAppContext : ApplicationContext
 		}
 		catch (Exception ex)
 		{
-			AppendLog("ERR", "Auto-restart port cleanup failed for port " + port + ": " + ex.Message);
+			AppendLog("ERR", "Port cleanup before start failed for port " + port + ": " + ex.Message);
 			return;
 		}
 		Dictionary<int, string> targets = new Dictionary<int, string>();
@@ -377,12 +365,12 @@ internal sealed class TrayAppContext : ApplicationContext
 		}
 		if (targets.Count == 0)
 		{
-			AppendLog("INFO", "Auto-restart port cleanup: no process is listening on port " + port + ".");
+			AppendLog("INFO", "Port cleanup before start: no process is listening on port " + port + ".");
 			return;
 		}
 		foreach (KeyValuePair<int, string> target in targets)
 		{
-			AppendLog("INFO", "Auto-restart port cleanup: killing PID " + target.Key + " (" + target.Value + ") on port " + port + ".");
+			AppendLog("INFO", "Port cleanup before start: killing PID " + target.Key + " (" + target.Value + ") on port " + port + ".");
 			Installer.KillProcessTree(target.Key);
 		}
 	}
@@ -424,47 +412,32 @@ internal sealed class TrayAppContext : ApplicationContext
 		consoleForm.Activate();
 	}
 
-	private void OpenLogsFolder()
-	{
-		AppPaths.EnsureDirs();
-		Process.Start("explorer.exe", "\"" + AppPaths.LogsDir + "\"");
-	}
-
 	private void ShowPorts()
 	{
 		using PortForm portForm = new PortForm(PortTools.SuggestedPortFromConfig());
 		portForm.ShowDialog();
 	}
 
-	private void InstallUnityPlugin()
-	{
-		UnityProjectPluginInstaller.InstallInteractive(null);
-	}
-
-	private void ShowAbout()
-	{
-		using AboutForm aboutForm = new AboutForm();
-		aboutForm.ShowDialog();
-	}
-
 	private void ShowConfig()
 	{
 		AppConfig config = AppConfig.Load();
 		using ConfigForm configForm = new ConfigForm(config);
-		if (configForm.ShowDialog() != DialogResult.OK)
+		configForm.ConfigChanged += delegate(AppConfig updatedConfig)
+		{
+			ApplyConfig(updatedConfig);
+		};
+		configForm.ShowDialog();
+	}
+
+	private void ApplyConfig(AppConfig appConfig)
+	{
+		if (appConfig == null)
 		{
 			return;
 		}
-		configForm.Result.Save();
-		ConfigureUnityMcpSession(configForm.Result);
-		if (ServerRunning)
-		{
-			DialogResult dialogResult = MessageBox.Show("Config saved.\r\n\r\nRestart mcp-for-unity now?", "McpForUnity Agent", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-			if (dialogResult == DialogResult.Yes)
-			{
-				RestartServer();
-			}
-		}
+		appConfig.Save();
+		ConfigureUnityMcpSession(appConfig);
+		RefreshMenuState();
 	}
 
 	private void ExitApp()

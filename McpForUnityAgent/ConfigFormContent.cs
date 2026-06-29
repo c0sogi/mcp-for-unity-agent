@@ -96,20 +96,21 @@ internal sealed class ConfigFormContent : UserControl
 		autoRestartBox.Text = "Auto restart when stopped";
 		autoRestartBox.Checked = config.AutoRestart;
 		autoRestartBox.AutoSize = true;
-		autoRestartBox.Padding = new Padding(0, 4, 12, 0);
+		autoRestartBox.Margin = new Padding(0, 7, 12, 0);
 		retryPanel.Controls.Add(autoRestartBox);
 		restartDelayBox = new NumericUpDown();
 		restartDelayBox.Minimum = 1m;
 		restartDelayBox.Maximum = 3600m;
 		restartDelayBox.Value = Math.Min(Math.Max(config.RestartDelaySeconds, 1), 3600);
 		restartDelayBox.Width = 90;
+		restartDelayBox.Margin = new Padding(0, 4, 0, 0);
 		retryPanel.Controls.Add(restartDelayBox);
 		Label secondsLabel = new Label
 		{
 			Text = "seconds",
 			AutoSize = true,
 			TextAlign = ContentAlignment.MiddleLeft,
-			Padding = new Padding(6, 4, 0, 0)
+			Margin = new Padding(8, 7, 0, 0)
 		};
 		retryPanel.Controls.Add(secondsLabel);
 		Label portCleanupLabel = new Label
@@ -128,23 +129,24 @@ internal sealed class ConfigFormContent : UserControl
 		tableLayoutPanel.Controls.Add(portCleanupPanel, 1, 3);
 		tableLayoutPanel.SetColumnSpan(portCleanupPanel, 2);
 		killPortOnRestartBox = new CheckBox();
-		killPortOnRestartBox.Text = "Kill port before auto restart";
+		killPortOnRestartBox.Text = "Kill port before start/restart";
 		killPortOnRestartBox.Checked = config.KillPortOnAutoRestart;
 		killPortOnRestartBox.AutoSize = true;
-		killPortOnRestartBox.Padding = new Padding(0, 4, 12, 0);
+		killPortOnRestartBox.Margin = new Padding(0, 7, 12, 0);
 		portCleanupPanel.Controls.Add(killPortOnRestartBox);
 		killPortBox = new NumericUpDown();
 		killPortBox.Minimum = 1m;
 		killPortBox.Maximum = 65535m;
 		killPortBox.Value = Math.Min(Math.Max(config.AutoRestartKillPort, 1), 65535);
 		killPortBox.Width = 90;
+		killPortBox.Margin = new Padding(0, 4, 0, 0);
 		portCleanupPanel.Controls.Add(killPortBox);
 		Label portLabel = new Label
 		{
 			Text = "port",
 			AutoSize = true,
 			TextAlign = ContentAlignment.MiddleLeft,
-			Padding = new Padding(6, 4, 0, 0)
+			Margin = new Padding(8, 7, 0, 0)
 		};
 		portCleanupPanel.Controls.Add(portLabel);
 		Label autoConnectLabel = new Label
@@ -157,7 +159,8 @@ internal sealed class ConfigFormContent : UserControl
 		startWithUnityBox = new CheckBox();
 		startWithUnityBox.Text = "Unity MCP session";
 		startWithUnityBox.Checked = config.AutoConnectUnitySession;
-		startWithUnityBox.Dock = DockStyle.Fill;
+		startWithUnityBox.AutoSize = true;
+		startWithUnityBox.Margin = new Padding(0, 7, 0, 0);
 		tableLayoutPanel.Controls.Add(startWithUnityBox, 1, 4);
 		tableLayoutPanel.SetColumnSpan(startWithUnityBox, 2);
 	}

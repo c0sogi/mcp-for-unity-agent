@@ -17,7 +17,7 @@ internal sealed class PortForm : Form
 
 	public PortForm(int suggestedPort)
 	{
-		Text = "MCP for Unity Ports";
+		Text = "MCP for Unity Port Killer";
 		AppWindow.ApplyIcon(this);
 		base.Width = 760;
 		base.Height = 430;
