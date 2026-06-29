@@ -1,6 +1,8 @@
 # McpForUnity Agent
 
-Windows tray agent for running `mcp-for-unity` with a pinned server package and a small management UI.
+Windows tray agent for running [MCP for Unity](https://github.com/CoplayDev/unity-mcp) with a pinned server package and a small management UI.
+
+MCP for Unity is the original Unity MCP project that lets AI assistants work with the Unity Editor. This agent focuses on the Windows install, tray control, client configuration, and recovery flow around it.
 
 ## Build
 
@@ -35,13 +37,25 @@ The package is written to `artifacts\McpForUnityAgent` and includes:
 - `uninstall.cmd`
 - `README.md`
 - `VERSION.txt`
+- `docs\McpForUnityAgent-quickstart-ko.pptx`
 - `src`
+
+## Generate Docs
+
+To refresh the Korean quickstart PowerPoint deck, run:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\generate-docs.ps1
+```
+
+The deck is written to `docs\McpForUnityAgent-quickstart-ko.pptx`.
+Generated screenshots, previews, and artifact-tool workspace files are kept under `artifacts\docs-build`.
 
 ## Install
 
 From the package folder, run `install.cmd`.
 
-The installer can also check or install dependencies:
+The installer can also check or install the tools needed to run the server and fetch the Unity plugin:
 
 - `uv`
 - `Git`

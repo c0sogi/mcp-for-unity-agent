@@ -28,6 +28,11 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 $exePath = Join-Path $root "bin\$Configuration\net40\McpForUnityAgent.exe"
+$quickstartPptx = Join-Path $root "docs\McpForUnityAgent-quickstart-ko.pptx"
+if (-not (Test-Path -LiteralPath $quickstartPptx)) {
+    throw "Quickstart PowerPoint not found: $quickstartPptx. Run scripts\generate-docs.ps1 before packaging."
+}
+
 Copy-Item -LiteralPath $exePath -Destination (Join-Path $OutputDir "McpForUnityAgent.exe")
 Copy-Item -LiteralPath (Join-Path $root "README.md") -Destination (Join-Path $OutputDir "README.md")
 
@@ -43,6 +48,10 @@ Set-Content -Path (Join-Path $OutputDir "VERSION.txt") -Value "McpForUnity Agent
 
 Set-Content -Path (Join-Path $OutputDir "install.cmd") -Value "@echo off`r`nsetlocal`r`nstart `"`" `"%~dp0McpForUnityAgent.exe`" --install`r`n" -Encoding ASCII
 Set-Content -Path (Join-Path $OutputDir "uninstall.cmd") -Value "@echo off`r`nsetlocal`r`nstart `"`" `"%~dp0McpForUnityAgent.exe`" --uninstall`r`n" -Encoding ASCII
+
+$docsDir = Join-Path $OutputDir "docs"
+New-Item -ItemType Directory -Path $docsDir | Out-Null
+Copy-Item -LiteralPath $quickstartPptx -Destination (Join-Path $docsDir "McpForUnityAgent-quickstart-ko.pptx")
 
 $sourceDir = Join-Path $OutputDir "src"
 New-Item -ItemType Directory -Path $sourceDir | Out-Null
@@ -61,6 +70,7 @@ Compress-Archive -LiteralPath @(
     (Join-Path $OutputDir "uninstall.cmd"),
     (Join-Path $OutputDir "README.md"),
     (Join-Path $OutputDir "VERSION.txt"),
+    $docsDir,
     $sourceDir
 ) -DestinationPath $zipPath -Force
 
