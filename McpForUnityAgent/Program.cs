@@ -35,19 +35,19 @@ internal static class Program
 			Environment.Exit(DependencySetup.RunDiagnostics(Console.Out, HasArg(args, "--simulate-missing-dependencies")));
 			return;
 		}
-		if (HasArg(args, "--install"))
-		{
-			using (InstallForm mainForm = new InstallForm())
-			{
-				Application.Run(mainForm);
-				return;
-			}
-		}
 		if (HasArg(args, "--uninstall"))
 		{
 			using (UninstallForm mainForm2 = new UninstallForm())
 			{
 				Application.Run(mainForm2);
+				return;
+			}
+		}
+		if (HasArg(args, "--install") || IsSetupExecutable())
+		{
+			using (InstallForm mainForm = new InstallForm())
+			{
+				Application.Run(mainForm);
 				return;
 			}
 		}
@@ -80,6 +80,13 @@ internal static class Program
 			}
 		}
 		return false;
+	}
+
+	private static bool IsSetupExecutable()
+	{
+		string name = Path.GetFileNameWithoutExtension(Application.ExecutablePath);
+		return name.EndsWith("Setup", StringComparison.OrdinalIgnoreCase)
+			|| name.EndsWith("Installer", StringComparison.OrdinalIgnoreCase);
 	}
 
 	private static class NativeConsole

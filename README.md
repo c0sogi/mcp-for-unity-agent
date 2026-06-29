@@ -30,15 +30,11 @@ Run the VS Code task `Package McpForUnityAgent` or:
 powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\package.ps1
 ```
 
-The package is written to `artifacts\McpForUnityAgent` and includes:
+The installer is written to:
 
-- `McpForUnityAgent.exe`
-- `install.cmd`
-- `uninstall.cmd`
-- `README.md`
-- `VERSION.txt`
-- `docs\McpForUnityAgent-quickstart-ko.pptx`
-- `src`
+```text
+artifacts\McpForUnityAgentSetup.exe
+```
 
 ## Generate Docs
 
@@ -53,7 +49,7 @@ Generated screenshots, previews, and artifact-tool workspace files are kept unde
 
 ## Install
 
-From the package folder, run `install.cmd`.
+Download and run `McpForUnityAgentSetup.exe`.
 
 The installer can also check or install the tools needed to run the server and fetch the Unity plugin:
 
