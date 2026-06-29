@@ -1,0 +1,49 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Build McpForUnityAgent",
+      "type": "process",
+      "command": "dotnet.exe",
+      "args": [
+        "build",
+        "${workspaceFolder}\\McpForUnityAgent.csproj",
+        "-c",
+        "Release"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "Package McpForUnityAgent",
+      "type": "process",
+      "command": "powershell.exe",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}\\scripts\\package.ps1"
+      ],
+      "dependsOn": "Build McpForUnityAgent",
+      "problemMatcher": []
+    },
+    {
+      "label": "Check Dependency Setup",
+      "type": "process",
+      "command": "powershell.exe",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}\\scripts\\check-dependencies.ps1"
+      ],
+      "dependsOn": "Build McpForUnityAgent",
+      "problemMatcher": []
+    }
+  ]
+}
