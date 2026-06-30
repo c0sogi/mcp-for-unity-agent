@@ -2,9 +2,11 @@ param(
     [string]$Configuration = "Release",
     [string]$OutputDir = "",
     [string]$PptxPath = "",
+    [string]$ManualPptxPath = "",
     [string]$PresentationSkillDir = "",
     [switch]$SkipBuild,
-    [switch]$SkipScreenshots
+    [switch]$SkipScreenshots,
+    [switch]$Regenerate
 )
 
 $ErrorActionPreference = "Stop"
@@ -22,6 +24,20 @@ $assetDir = Join-Path $buildDir "assets\quickstart-ko"
 $previewDir = Join-Path $buildDir "preview"
 $projectPath = Join-Path $root "McpForUnityAgent.csproj"
 $exePath = Join-Path $root "bin\$Configuration\net40\McpForUnityAgent.exe"
+
+function Copy-ManualDeck {
+    param(
+        [string]$SourcePath,
+        [string]$DestinationPath
+    )
+
+    if (-not (Test-Path -LiteralPath $SourcePath)) {
+        throw "Manual PowerPoint not found: $SourcePath"
+    }
+    New-Item -ItemType Directory -Force -Path (Split-Path -Parent $DestinationPath) | Out-Null
+    Copy-Item -LiteralPath $SourcePath -Destination $DestinationPath -Force
+    Write-Host "Manual PowerPoint copied to $DestinationPath"
+}
 
 function Resolve-PresentationSkillDir {
     param([string]$Requested)
@@ -70,6 +86,17 @@ function Save-UnityMcpReadmeImage {
         }
         Write-Warning "Could not refresh Unity MCP README demo image. Using existing file: $imagePath"
     }
+}
+
+if (-not [string]::IsNullOrWhiteSpace($ManualPptxPath)) {
+    Copy-ManualDeck -SourcePath $ManualPptxPath -DestinationPath $PptxPath
+    return
+}
+
+if ((Test-Path -LiteralPath $PptxPath) -and -not $Regenerate) {
+    Write-Host "Existing PowerPoint kept: $PptxPath"
+    Write-Host "Pass -Regenerate to rebuild it from screenshots and script."
+    return
 }
 
 if (-not $SkipBuild) {

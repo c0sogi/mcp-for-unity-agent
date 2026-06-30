@@ -38,13 +38,15 @@ artifacts\McpForUnityAgentSetup.exe
 
 ## Generate Docs
 
-To refresh the Korean quickstart PowerPoint deck, run:
+The Korean quickstart deck is manually adjusted, including embedded OLE content. To import an edited deck:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\generate-docs.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\generate-docs.ps1 -ManualPptxPath "C:\Users\sdml-cosogi\Downloads\McpForUnityAgent_매뉴얼.pptx"
 ```
 
-The deck is written to `docs\McpForUnityAgent-quickstart-ko.pptx`.
+The deck is copied to `docs\McpForUnityAgent-quickstart-ko.pptx`.
+
+To rebuild a draft deck from screenshots and script output instead, pass `-Regenerate`.
 Generated screenshots, previews, and artifact-tool workspace files are kept under `artifacts\docs-build`.
 
 ## Install
